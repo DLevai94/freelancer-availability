@@ -23,10 +23,11 @@ export default async (req: NextApiRequest, res: NextApiResponse<ResData>) => {
     async function page(records, fetchNextPage) {
       for await (const record of records) {
         console.log('Retrieved', record.get('First Name'));
+        console.log('Retrieved', record.get('Email'));
         const id = record.getId();
         mailClient.sendEmailWithTemplate({
           From: process.env.POSTMARK_FROM,
-          To: record.get('Email').toString(),
+          To: 'david.levai@screamingbox.com',
           TemplateAlias: 'monthly-availability',
           TemplateModel: {
             name: record.get('First Name'),
