@@ -1,0 +1,13 @@
+name: Monthly cron job
+on:
+  schedule:
+    - cron: '0 0 1 * *'
+jobs:
+  cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send out mail
+        run: |
+          curl --request POST \
+          --url '${{ secrets.URL }}/api/monthly-mail' \
+          --header 'Authorization: Bearer ${{ secrets.AUTH_SECRET }}'
