@@ -29,21 +29,24 @@ export default async (req: NextApiRequest, res: NextApiResponse<ResData>) => {
         console.log('Retrieved', record.get('First Name'));
         console.log('Retrieved', record.get('Email'));
         const id = record.getId();
-        mailClient.sendEmailWithTemplate({
-          From: process.env.POSTMARK_FROM,
-          To: 'david.levai@screamingbox.com',
-          TemplateAlias: 'monthly-availability',
-          TemplateModel: {
-            name: record.get('First Name'),
-            month: 'June',
-            action_url_0: `${process.env.VERCEL_URL}/message?user=${id}&availability=0`,
-            action_url_10: `${process.env.VERCEL_URL}/message?user=${id}&availability=10`,
-            action_url_20: `${process.env.VERCEL_URL}/message?user=${id}&availability=20`,
-            action_url_30: `${process.env.VERCEL_URL}/message?user=${id}&availability=30`,
-            action_url_40: `${process.env.VERCEL_URL}/message?user=${id}&availability=40`,
-          },
-          MessageStream: 'monthly-availability',
-        });
+        mailClient
+          .sendEmailWithTemplate({
+            From: process.env.POSTMARK_FROM,
+            To: 'david.levai@screamingbox.com',
+            TemplateAlias: 'monthly-availability',
+            TemplateModel: {
+              name: record.get('First Name'),
+              month: 'June',
+              action_url_0: `${process.env.VERCEL_URL}/message?user=${id}&availability=0`,
+              action_url_10: `${process.env.VERCEL_URL}/message?user=${id}&availability=10`,
+              action_url_20: `${process.env.VERCEL_URL}/message?user=${id}&availability=20`,
+              action_url_30: `${process.env.VERCEL_URL}/message?user=${id}&availability=30`,
+              action_url_40: `${process.env.VERCEL_URL}/message?user=${id}&availability=40`,
+            },
+            MessageStream: 'monthly-availability',
+          })
+          .then((res) => console.log('sent'))
+          .catch((err) => console.log(err));
       }
 
       fetchNextPage();
