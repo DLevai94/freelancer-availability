@@ -10,18 +10,21 @@ type ResData = {
 
 export default async (req: NextApiRequest, res: NextApiResponse<ResData>) => {
   res.setHeader('Cache-Control', 'no-store, max-age=0');
-  // if (req.headers.authorization !== `Bearer ${process.env.AUTH_SECRET}`) {
-  //   res.status(403).send({ result: 'Authorization error' });
-  //   return;
-  // }
+  if (req.headers.authorization.split(' ')[1] !== `${process.env.AUTH_SECRET}`) {
+    res.status(401).send({ result: 'Authorization error' });
+    return;
+  }
+  console.log('start');
   const table = new Airtable({ apiKey: process.env.AIRTABLE_API })
     .base(process.env.AIRTABLE_BASE)
     .table(process.env.AIRTABLE_TABLE);
 
   const records = await table.select({ fields: ['First Name', 'Email'] });
-
+  console.log('records');
+  console.table(records);
   records.eachPage(
     async function page(records, fetchNextPage) {
+      console.log('foreach');
       for await (const record of records) {
         console.log('Retrieved', record.get('First Name'));
         console.log('Retrieved', record.get('Email'));
