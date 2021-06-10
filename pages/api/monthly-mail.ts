@@ -3,6 +3,9 @@ import Airtable from 'airtable';
 import { ServerClient } from 'postmark';
 
 const mailClient = new ServerClient(process.env.POSTMARK_API);
+const table = new Airtable({ apiKey: process.env.AIRTABLE_API })
+  .base(process.env.AIRTABLE_BASE)
+  .table(process.env.AIRTABLE_TABLE);
 
 type ResData = {
   result: string;
@@ -15,9 +18,6 @@ export default async (req: NextApiRequest, res: NextApiResponse<ResData>) => {
     return;
   }
   console.log('start');
-  const table = new Airtable({ apiKey: process.env.AIRTABLE_API })
-    .base(process.env.AIRTABLE_BASE)
-    .table(process.env.AIRTABLE_TABLE);
 
   const records = await table.select({ fields: ['First Name', 'Email'] });
   console.log('records');
