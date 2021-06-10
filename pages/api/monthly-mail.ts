@@ -9,6 +9,7 @@ type ResData = {
 };
 
 export default async (req: NextApiRequest, res: NextApiResponse<ResData>) => {
+  res.setHeader('Cache-Control', 'no-store, max-age=0');
   // if (req.headers.authorization !== `Bearer ${process.env.AUTH_SECRET}`) {
   //   res.status(403).send({ result: 'Authorization error' });
   //   return;

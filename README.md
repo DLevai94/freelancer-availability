@@ -9,8 +9,6 @@ Make a local development environment by running `cp .env.example .env.local` and
 Run dev server:
 
 ```bash
-npm run dev
-# or
 yarn dev
 ```
 
