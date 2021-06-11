@@ -19,9 +19,9 @@ export default async (req: NextApiRequest, res: NextApiResponse<ResData>) => {
   }
   console.log('start');
 
-  // const records = await table.select({ fields: ['First Name', 'Email'] });
-  // console.log('records');
-  // console.table(records);
+  const records = await table.select({ fields: ['First Name', 'Email'] });
+  console.log('records');
+  console.table(records);
   // records.eachPage(
   //   async function page(records, fetchNextPage) {
   //     console.log('foreach');
