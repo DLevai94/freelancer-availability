@@ -13,10 +13,10 @@ type ResData = {
 
 export default async (req: NextApiRequest, res: NextApiResponse<ResData>) => {
   res.setHeader('Cache-Control', 'no-store, max-age=0');
-  if (req?.headers?.authorization?.split(' ')?.[1] !== `${process?.env?.AUTH_SECRET}`) {
-    res.status(401).send({ result: 'Authorization error' });
-    return;
-  }
+  // if (req?.headers?.authorization?.split(' ')?.[1] !== `${process?.env?.AUTH_SECRET}`) {
+  //   res.status(401).send({ result: 'Authorization error' });
+  //   return;
+  // }
   console.log('start');
 
   const records = await table.select({ fields: ['First Name', 'Email'] });
