@@ -57,7 +57,7 @@ export default async (req: NextApiRequest, res: NextApiResponse<ResData>) => {
   //       res.status(500).send({ result: 'Error' });
   //       return;
   //     }
-  //     res.status(200).json({ result: 'ok' });
+  res.status(200).json({ result: 'ok' });
   //     return;
   //   }
   // );
