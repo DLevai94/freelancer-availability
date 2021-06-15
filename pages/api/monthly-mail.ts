@@ -21,52 +21,49 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   try {
     const records = await table.select({ fields: ['First Name', 'Email'] });
-    console.log('records');
-    console.table(records);
-    res.status(200).json({ result: 'ok', records });
+
+    records.eachPage(
+      async function page(records, fetchNextPage) {
+        console.log('foreach');
+        for await (const record of records) {
+          console.log('Retrieved', record.get('First Name'));
+          console.log('Retrieved', record.get('Email'));
+          const id = record.getId();
+          mailClient
+            .sendEmailWithTemplate({
+              From: process.env.POSTMARK_FROM,
+              To: 'david.levai@screamingbox.com',
+              TemplateAlias: 'monthly-availability',
+              TemplateModel: {
+                name: record.get('First Name'),
+                month: 'June',
+                action_url_0: `${process.env.VERCEL_URL}/message?user=${id}&availability=0`,
+                action_url_10: `${process.env.VERCEL_URL}/message?user=${id}&availability=10`,
+                action_url_20: `${process.env.VERCEL_URL}/message?user=${id}&availability=20`,
+                action_url_30: `${process.env.VERCEL_URL}/message?user=${id}&availability=30`,
+                action_url_40: `${process.env.VERCEL_URL}/message?user=${id}&availability=40`,
+              },
+              MessageStream: 'monthly-availability',
+            })
+            .then((res) => console.log('sent'))
+            .catch((err) => console.log(err));
+        }
+
+        fetchNextPage();
+      },
+      function done(err) {
+        if (err) {
+          console.error(err);
+          res.status(500).send({ result: 'Error' });
+          return;
+        }
+        res.status(200).json({ result: 'ok' });
+        return;
+      }
+    );
   } catch (error) {
     console.log('error');
     console.log(error);
     res.status(200).json({ result: 'error', error });
   }
-  // records.eachPage(
-  //   async function page(records, fetchNextPage) {
-  //     console.log('foreach');
-  //     for await (const record of records) {
-  //       console.log('Retrieved', record.get('First Name'));
-  //       console.log('Retrieved', record.get('Email'));
-  //       const id = record.getId();
-  //       mailClient
-  //         .sendEmailWithTemplate({
-  //           From: process.env.POSTMARK_FROM,
-  //           To: 'david.levai@screamingbox.com',
-  //           TemplateAlias: 'monthly-availability',
-  //           TemplateModel: {
-  //             name: record.get('First Name'),
-  //             month: 'June',
-  //             action_url_0: `${process.env.VERCEL_URL}/message?user=${id}&availability=0`,
-  //             action_url_10: `${process.env.VERCEL_URL}/message?user=${id}&availability=10`,
-  //             action_url_20: `${process.env.VERCEL_URL}/message?user=${id}&availability=20`,
-  //             action_url_30: `${process.env.VERCEL_URL}/message?user=${id}&availability=30`,
-  //             action_url_40: `${process.env.VERCEL_URL}/message?user=${id}&availability=40`,
-  //           },
-  //           MessageStream: 'monthly-availability',
-  //         })
-  //         .then((res) => console.log('sent'))
-  //         .catch((err) => console.log(err));
-  //     }
-
-  //     fetchNextPage();
-  //   },
-  //   function done(err) {
-  //     if (err) {
-  //       console.error(err);
-  //       res.status(500).send({ result: 'Error' });
-  //       return;
-  //     }
-  // res.status(200).json({ result: 'ok' });
-  //     return;
-  //   }
-  // );
-  
 };
