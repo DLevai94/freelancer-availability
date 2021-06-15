@@ -29,7 +29,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           console.log('Retrieved', record.get('First Name'));
           console.log('Retrieved', record.get('Email'));
           const id = record.getId();
-          mailClient
+          await mailClient
             .sendEmailWithTemplate({
               From: process.env.POSTMARK_FROM,
               To: 'david.levai@screamingbox.com',
