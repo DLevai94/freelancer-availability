@@ -23,9 +23,11 @@ export default async (req: NextApiRequest, res: NextApiResponse<ResData>) => {
     const records = await table.select({ fields: ['First Name', 'Email'] });
     console.log('records');
     console.table(records);
+    res.status(200).json({ result: 'ok', records });
   } catch (error) {
     console.log('error');
     console.log(error);
+    res.status(200).json({ result: 'error', error });
   }
   // records.eachPage(
   //   async function page(records, fetchNextPage) {
@@ -66,5 +68,5 @@ export default async (req: NextApiRequest, res: NextApiResponse<ResData>) => {
   //     return;
   //   }
   // );
-  res.status(200).json({ result: 'ok' });
+  
 };
